@@ -13,7 +13,7 @@ const DEBUG = JSON.parse(import.meta.env.VITE_DEBUG)
 const createRouter =
     DEBUG ?
         createBrowserRouter
-        :
+        :                                                                                         
         createHashRouter
 
 

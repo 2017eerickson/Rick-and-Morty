@@ -1,10 +1,9 @@
 import axios from "axios"
-import Card from 'react-bootstrap/Card';
-import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { useEffect } from "react";
-
+import CharacterCard from "../components/CharacterCard";
+import Spinner from 'react-bootstrap/Spinner';
 
 const Homepage = () => {
     // const[searchChar, setSearchChar] = useState(null)
@@ -12,36 +11,36 @@ const Homepage = () => {
     // const[charName, setCharName] = useState('')
 
     const navigate = useNavigate()
-    const {charactersData,charId,setCharId,charName,setCharName,searchChar,setSearchChar} = useOutletContext()
+    // const {charactersData,charId,setCharId,charName,setCharName,searchChar,setSearchChar} = useOutletContext()
+    const {addData,rmData,charactersData} = useOutletContext()
 
-    async function fetchCharacter(){
-        let url = `https://rickandmortyapi.com/api/character/${charId}`
-        let response = await axios.get(url)
-        addData(response.data)
-        // console.log(response.data)
-        // console.log("here")
+    // async function fetchCharacter(){
+    //     let url = `https://rickandmortyapi.com/api/character/${charId}`
+    //     let response = await axios.get(url)
+    //     addData(response.data)
+    //     // console.log(response.data)
+    //     // console.log("here")
 
-    }
+    // }
 
-    const addData = (data) => {
-        setSearchChar([...searchChar,data])
+    // const addData = (data) => {
+    //     setSearchChar([...searchChar,data])
 
-    }
-    const rmData = (id) => {
-        setSearchChar(
-            searchChar.filter((character)=>{
-            character.id !== id
-        }))
-        // console.log(searchChar)
-    }
+    // }
+    // const rmData = (id) => {
+    //     setSearchChar(
+    //         searchChar.filter((character)=>{
+    //         character.id !== id
+    //     }))
+    //     // console.log(searchChar)
+    // }
 
     useEffect(()=>{
 
     },[searchChar])
 
-    const handleSubmit =(e) =>{
-        e.preventDefault()
-       
+    const handleClick =(e) =>{
+       setCharName(e.target.value)
         charactersData.map((character)=>{
             // console.log(character.name, charName)
             if (character.name == charName){
@@ -50,57 +49,40 @@ const Homepage = () => {
         })  
         // console.log(charId)
         // console.log("no here")
-
-        charId && fetchCharacter()
+        // charId && fetchCharacter()
 
     }
 
     return(
         <div className=" min-h-screen m-2">
-            <form className='text-center'onSubmit={handleSubmit}>
+            <div className="flex flex-col jusify-center w-1/5 ">
                 <input
-                    className="bg-white rounded p-1"
+                    className="bg-white rounded p-1 border border-black border-3"
                     type="text"
                     value={charName}
-                    onChange={(e) => setCharName(e.target.value)}
-                    placeholder="Enter character name"
+                    onChange={(e) => handleClick(e)}
+                    placeholder="enter character name"
                     >
                 </input>
-                <input className="bg-white rounded-e-full m-2 p-1" type="submit"/>     
-            </form>
+                <button 
+                     className="bg-white rounded  m-2"
+                    onClick = {()=>{
+                        navigate(`/characterdetails/${charId}`)
+                    }}
+                    >
+                    Search
+                </button>   
+            </div>
             <div className="flex flex-row max-block-fit flex-wrap">
                 { searchChar ?
-                    searchChar.map((character)=>(
-                   
-                        <Card style={{ width: '50vmin' }} className=" m-2 rounded-4xl border-black">
-                            <Card.Img variant="top" className="p-4  bg-blue-200" src={character.image} />
-                            <Card.Body className="flex jusity-center flex-col  bg-green-500">
-                                <Card.Title>Name: {character.name}</Card.Title>
-                                <Card.Text>
-                                    Status: {character.status}
-                                </Card.Text>
-                                <Button 
-                                    variant="primary"
-                                    onClick={()=>{navigate(
-                                        `/characterdetails/${character.id}`
-                                    )}}
-                                    >
-                                    View Details
-                                </Button>
-                                <Button 
-                                    variant="danger"
-                                    onClick={
-                                        rmData(character.id)
-                                        
-                                    }
-                                    >
-                                    delete character
-                                </Button>
-                            </Card.Body>
-                        </Card>
-                ))
+                    <CharacterCard
+                    charactersData={searchChar}
+                    addData={addData}
+                    rmData={rmData}
+                    />
                 :
-                null
+                    <Spinner animation="border" variant="light" />
+
                 }
             </div>
         </div>
