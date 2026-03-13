@@ -12,7 +12,6 @@
     "cy:open": "cypress open ",
     "deploy": "gh-pages -d dist",
     "predeploy": "npm run build"
-    
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
